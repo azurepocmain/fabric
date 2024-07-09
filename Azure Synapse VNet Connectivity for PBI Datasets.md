@@ -1,10 +1,12 @@
 # Azure Synapse VNet Connectivity for PBI Datasets
 
-**Overview: **
+**Overview:**
 A client would like to implement VNet connectivity for their Power BI Datasets when it calls their Azure Synapse service. This will ensure that traffic going to and from the Power BI data set, will only traverse the private network. This document will outline the steps on how to implement their Power BI gateway to their Azure VNet.  
 
 **Steps:**
+
 **Step 1:**
+
 Go to the Azure subscription	that the Azure Synapse resides in, go to Subscription -> Resource providers, and search for “Microsoft.PowerPlatform” and register the provider: 
  ![image](https://github.com/azurepocmain/fabric/assets/91505344/6f34029b-1392-4ea9-857b-4ecc245cc734)
 
@@ -13,6 +15,7 @@ Confirm that you see the provider “Microsoft.PowerPlatform” registered befor
 
 
 **Step 2:**
+
 Create a VNet or leverage a VNet that Azure Synapse already is in use with. Proceed to create a subnet in that VNet, one for Power BI gateway connection and another for Azure Synapse. Please note that “This new subnet cannot be shared with other services but will be used entirely by the Power Platform VNet service. Also “Do not use the subnet name, “gateway subnet”, as this is a reserved word for the Azure Gateway Subnet feature. You won't be able to use it to create a VNet data gateway. Make sure this subnet doesn't have an IPV6 address space added. Therefore, Synapse and Power BI gateway will both need separate subnets with a total of at least two subnets. Regarding the IP addresses “reserved Ips for the service, our recommendation is to have approximately 5-7 IPs so you can add more VNet gateways to the same VNet and Subnet.” References: [Use virtual network (VNet) data gateway in Power Platform dataflows | Microsoft Docs  Use virtual network (VNet) data gateway in Power Platform dataflows | Microsoft Docs](https://docs.microsoft.com/en-us/data-integration/vnet/data-gateway-power-platform-dataflows)
 Regarding Azure VNet pricing cost, please visit the following link for additional info: Azure Virtual Network FAQ | Microsoft Docs Virtual Network Pricing | [Microsoft Azure](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq)
  ![image](https://github.com/azurepocmain/fabric/assets/91505344/ab982e9a-1663-47ef-9f49-b19b43f8723a)
@@ -23,12 +26,14 @@ Regarding Azure VNet pricing cost, please visit the following link for additiona
  
 
 **Step 3:**
+
 Next, go to the Power Platform admin center, at: https://admin.powerplatform.microsoft.com/
 Select, “Data (preview)” -> “Create a virtual network data gateway”. 
  ![image](https://github.com/azurepocmain/fabric/assets/91505344/a04892f7-dcbe-452f-abce-ac269bc24453)
 
  
 **Step 4:**
+
 Enter the information for the virtual network that you created in “Step 2” that was designated to Power BI. Then confirm that the virtual data gateway is created: 
 
 ![image](https://github.com/azurepocmain/fabric/assets/91505344/f53141f7-8512-44f8-83a6-e6b6d6f6726e)
@@ -40,6 +45,7 @@ Enter the information for the virtual network that you created in “Step 2” t
 
 
 **Step 5:**
+
 Next, check the status of the gateway by selecting the “Status” button in the below image and confirm that it says “Online”. 
  
 ![image](https://github.com/azurepocmain/fabric/assets/91505344/416cd1f7-62b3-4bfb-9ff4-e8512a5e8823)
@@ -50,6 +56,7 @@ Next, check the status of the gateway by selecting the “Status” button in th
 
 
 **Step 6:**
+
 Next go to Azure Synapse workspace, in the security section in the left pane, select “Private endpoint connections” and proceed to create a private endpoint. As we can see below, for the resource type, you will select the synapse workspace and resource name. As for the sub-resource type, there are three types: Sql is for SQL query execution in SQL pool. SqlOnDemand is for SQL built-in query execution. Dev is for accessing everything else inside Azure Synapse Analytics Studio workspaces. In the below image, we are selecting the SQL Serverless pool. Therefore, if you require access to multiple pools, you will process this step more than once. 
  ![image](https://github.com/azurepocmain/fabric/assets/91505344/dbb7d9b5-2dfb-473e-8079-b2cb31119ca4)
 
@@ -61,6 +68,7 @@ Step three, we will select the same VNET and subnet that was created above, spec
  
 
 **Step 7:**
+
 Next, go to your Power BI workspace and select dataset settings on the data set that you want to use the Azure VNet data gateway. 
  ![image](https://github.com/azurepocmain/fabric/assets/91505344/6d72594e-5f72-4074-a4d5-4ab6abbd04d5)
 
